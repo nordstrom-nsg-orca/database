@@ -28,6 +28,10 @@ resources:
 
   Outputs:
     nsgCloudDBUrl:
-      Value: !GetAtt nsgCloudDB.Endpoint.Address
+      Value: !Join
+       - ':'
+       - - "https://"
+         - !GetAtt nsgCloudDB.Endpoint.Address
+         - !GetAtt nsgCloudDB.Endpoint.Port
       Export:
         Name: nsgCloudDBUrl
