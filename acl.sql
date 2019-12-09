@@ -1,19 +1,19 @@
-CREATE TABLE acl_prefix(
+CREATE TABLE access_list(
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL
 );
 
-CREATE TABLE acl_item(
+CREATE TABLE access_item(
     id SERIAL PRIMARY KEY,
-    prefix_id INTEGER REFERENCES acl_prefix(id),
+    list_id INTEGER REFERENCES access_list(id),
     subnet VARCHAR NOT NULL,
-    description VARCHAR,
+    description VARCHAR
 );
 
 CREATE OR REPLACE VIEW acl_view
 AS
-SELECT  p.name,
+SELECT  l.name,
         i.subnet,
         i.description
-FROM acl_item i
-JOIN acl_prefix p ON i.id = p.id;
+FROM access_item i
+JOIN access_list l ON i.list_id = l.id;
