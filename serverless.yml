@@ -2,7 +2,7 @@
 
 service: postgressql
 
-frameworkVersion: "=1.57.0"
+frameworkVersion: ">=1.57.0"
 
 provider:
   name: aws
@@ -11,6 +11,31 @@ provider:
 
 resources:
   Resources:
+    nsgCloudDBSubnets:
+      Type: AWS::RDS::DBSubnetGroup
+      Properties:
+        DBSubnetGroupName: test-subnet-group
+        DBSubnetGroupDescription: DMZ Subnets
+        SubnetIds:
+          - subnet-000ab08a6ba523839
+          - subnet-01e7a71a57518a8bc
+          - subnet-08b7d5fb815fda7ea
+    nsgCloudDBExternal:
+      Type: "AWS::RDS::DBInstance"
+      Properties:
+        AvailabilityZone: us-west-2a
+        AllocatedStorage: "100"
+        DBInstanceClass: db.t2.micro
+        DBName: "nsgExternalDB"
+        DBInstanceIdentifier: "nsgExternalDB"
+        Engine: postgres
+        Iops: "1000"
+        MasterUserPassword: ${env:DB_PWD}
+        MasterUsername: ${env:DB_USER}
+        Port: 5432
+        DBSubnetGroupName: test-subnet-group
+        PubliclyAccessible: true
+      DependsOn: nsgCloudDBSubnets
     nsgCloudDB:
       Type: "AWS::RDS::DBInstance"
       Properties:
@@ -25,6 +50,7 @@ resources:
         MasterUsername: ${env:DB_USER}
         Port: 5432
         DBSubnetGroupName: default-vpc-0538b50f1bd3cfd82
+
 
   Outputs:
     nsgCloudDBUrl:
