@@ -20,3 +20,4 @@ var/
 .serverless
 oldDB.pgpass
 newDB.pgpass
+mydb2dump.sql
