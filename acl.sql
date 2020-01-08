@@ -10,6 +10,11 @@ CREATE TABLE access_item(
     description VARCHAR
 );
 
+CREATE TABLE test(
+  id SERIAL PRIMARY KEY,
+  name VARCHAR NOT NULL
+);
+
 CREATE OR REPLACE VIEW acl_view
 AS
 SELECT  l.name,
