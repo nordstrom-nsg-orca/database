@@ -5,6 +5,9 @@ DO $$
 DECLARE ret_id INT; 
 BEGIN
 
+# ---- ---- ----- ---- ---- 
+# ACLS
+# ---- ---- ----- ---- ----
 INSERT INTO access_list (name) VALUES ('REMOTE-MANAGEMENT-STATIONS') RETURNING id INTO ret_id;
 INSERT INTO access_item (list_id, subnet, description) VALUES
   (ret_id, '10.16.17.183/32', 'NSGTools PROD (a0319p11202'),
@@ -48,15 +51,17 @@ INSERT INTO access_item (list_id, subnet, description) VALUES
   (ret_id, '10.228.33.231/32', ''),
   (ret_id, '10.17.72.15/32', '');
 
-INSERT INTO access_list (name) VALUES ('TACACS-SERVERS') RETURNING id INTO ret_id;
-INSERT INTO access_item (list_id, subnet, description) VALUES
-  (ret_id, '10.16.23.39/32', ''),
-  (ret_id, '10.228.32.32/32', '');
+# ---- ---- ----- ---- ----
+# SERVERS
+# ---- ---- ----- ---- ----
+INSERT INTO server_type (type) VALUES('NTP') RETURNING id INTO ret_id;
+INSERT INTO server_item (type_id, ip, tag) VALUES
+  (ret_id, '10.5.1.10', 'PRIMARY'),
+  (ret_id, '10.16.101.16', 'BACKUP')
 
-INSERT INTO access_list (name) VALUES ('NTP-SERVERS') RETURNING id INTO ret_id;
-INSERT INTO access_item (list_id, subnet, description) VALUES
-  (ret_id, '10.5.1.10/32', ''),
-  (ret_id, '10.16.101.16/32', ''),
-  (ret_id, '127.0.0.1/32', '');
+INSERT INTO server_type (type) VALUES('Tacacs') RETURNING id INTO ret_id;
+INSERT INTO server_item (type_id, ip) VALUES
+  (ret_id, '10.16.23.39'),
+  (ret_id, '10.228.32.32')
 
 END $$;
