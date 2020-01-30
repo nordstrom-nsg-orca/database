@@ -1,15 +1,12 @@
-DELETE FROM access_item;
-DELETE FROM access_list;
-
 DO $$
 DECLARE ret_id INT; 
 BEGIN
 
-# ---- ---- ----- ---- ---- 
-# ACLS
-# ---- ---- ----- ---- ----
-INSERT INTO access_list (name) VALUES ('REMOTE-MANAGEMENT-STATIONS') RETURNING id INTO ret_id;
-INSERT INTO access_item (list_id, subnet, description) VALUES
+---- ---- ---- ----- ---- ---- 
+-- ACLS
+---- ---- ---- ----- ---- ----
+INSERT INTO orca.access_list (name) VALUES ('REMOTE-MANAGEMENT-STATIONS') RETURNING id INTO ret_id;
+INSERT INTO orca.access_item (list_id, subnet, description) VALUES
   (ret_id, '10.16.17.183/32', 'NSGTools PROD (a0319p11202'),
   (ret_id, '10.16.23.48/32', 'Infoblox Discovery Appliance (ddidscv1.0319.datacenter.nordstrom.net)'),
   (ret_id, '10.16.23.76/32', 'Jump server (y0319p11015)'),
@@ -33,8 +30,8 @@ INSERT INTO access_item (list_id, subnet, description) VALUES
   (ret_id, '172.23.40.0/22', 'NSG AWS VPC'),
   (ret_id, '172.23.44.0/22', 'NSG AWS VPC');
 
-INSERT INTO access_list (name) VALUES ('SNMP-ACCESS-ONLY') RETURNING id INTO ret_id;
-INSERT INTO access_item (list_id, subnet, description) VALUES
+INSERT INTO orca.access_list (name) VALUES ('SNMP-ACCESS-ONLY') RETURNING id INTO ret_id;
+INSERT INTO orca.access_item (list_id, subnet, description) VALUES
   (ret_id, '10.17.72.14/32', ''),
   (ret_id, '10.17.72.16/32', ''),
   (ret_id, '10.17.72.17/32', ''),
@@ -51,17 +48,25 @@ INSERT INTO access_item (list_id, subnet, description) VALUES
   (ret_id, '10.228.33.231/32', ''),
   (ret_id, '10.17.72.15/32', '');
 
-# ---- ---- ----- ---- ----
-# SERVERS
-# ---- ---- ----- ---- ----
-INSERT INTO server_type (type) VALUES('NTP') RETURNING id INTO ret_id;
-INSERT INTO server_item (type_id, ip, tag) VALUES
+---- ---- ---- ----- ---- ----
+-- SERVERS
+---- ---- ---- ----- ---- ----
+INSERT INTO orca.server_type (name) VALUES('NTP') RETURNING id INTO ret_id;
+INSERT INTO orca.server_item (type_id, ip, tag) VALUES
   (ret_id, '10.5.1.10', 'PRIMARY'),
-  (ret_id, '10.16.101.16', 'BACKUP')
+  (ret_id, '10.16.101.16', 'BACKUP');
 
-INSERT INTO server_type (type) VALUES('Tacacs') RETURNING id INTO ret_id;
-INSERT INTO server_item (type_id, ip) VALUES
+INSERT INTO orca.server_type (name) VALUES('Tacacs') RETURNING id INTO ret_id;
+INSERT INTO orca.server_item (type_id, ip) VALUES
   (ret_id, '10.16.23.39'),
-  (ret_id, '10.228.32.32')
+  (ret_id, '10.228.32.32');
+
+INSERT INTO orca.server_type (name) VALUES('Syslog') RETURNING id INTO ret_id;
+INSERT INTO orca.server_item (type_id, ip) VALUES
+  (ret_id, '10.16.150.104');
+
+INSERT INTO orca.server_type (name) VALUES('SNMP Trap') RETURNING id INTO ret_id;
+INSERT INTO orca.server_item (type_id, ip) VALUES
+  (ret_id, '10.16.150.104');
 
 END $$;
