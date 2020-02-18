@@ -23,7 +23,8 @@ CREATE TABLE orca.access_item(
     id SERIAL PRIMARY KEY,
     list_id INTEGER REFERENCES orca.access_list(id) NOT NULL,
     subnet VARCHAR NOT NULL,
-    description VARCHAR
+    description VARCHAR,
+    delete BOOLEAN NOT NULL DEFAULT False
 );
 
 CREATE OR REPLACE VIEW orca.acl_view
@@ -44,11 +45,14 @@ SELECT json_build_object(
             columns.column_name <> 'id'
     ),
     'headers', ( 
-        SELECT array_agg(columns.column_name) AS array_agg
-        FROM information_schema.columns
-        WHERE columns.table_name = 'access_item' AND
-            (columns.column_name <> ALL (ARRAY['id', 'list_id']))
-        ),
+        SELECT json_agg(t.*) AS json_agg
+        FROM (
+            SELECT columns.column_name, columns.data_type
+            FROM information_schema.columns
+            WHERE columns.table_name = 'access_item' AND
+                (columns.column_name <> ALL (ARRAY['id', 'list_id']))
+        ) t
+    ),
     'data', (
         SELECT json_agg(t.*) AS json_agg
         FROM (
@@ -92,11 +96,14 @@ SELECT json_build_object(
             columns.column_name <> 'id'
     ),
     'headers', ( 
-        SELECT array_agg(columns.column_name) AS array_agg
-        FROM information_schema.columns
-        WHERE columns.table_name = 'server_item' AND
-            (columns.column_name <> ALL (ARRAY['id', 'type_id']))
-        ),
+        SELECT json_agg(t.*) AS json_agg
+        FROM (
+            SELECT columns.column_name, columns.data_type
+            FROM information_schema.columns
+            WHERE columns.table_name = 'server_item' AND
+                (columns.column_name <> ALL (ARRAY['id', 'type_id']))
+        ) t
+    ),
     'data', (
         SELECT json_agg(t.*) AS json_agg
         FROM (
@@ -107,7 +114,9 @@ SELECT json_build_object(
         ) t)
 ) AS results;
 
-
+---- ---- ---- ---- ---- ---- ---- ---- 
+--- ANSIBLE VIEW
+---- ---- ---- ---- ---- ---- ---- ---- 
 
 CREATE OR REPLACE VIEW orca.module_view
 AS
