@@ -30,8 +30,8 @@ resources:
         DBInstanceIdentifier: "nsgExternalDB"
         Engine: postgres
         Iops: "1000"
-        MasterUserPassword: ${env:DB_PWD}
-        MasterUsername: ${env:DB_USER}
+        MasterUserPassword: ${env:NSG_DB_PASS}
+        MasterUsername: nsg
         Port: 5432
         DBSubnetGroupName: test-subnet-group
         PubliclyAccessible: true
@@ -46,8 +46,8 @@ resources:
         DBInstanceIdentifier: "nsgCloudDB"
         Engine: postgres
         Iops: "1000"
-        MasterUserPassword: ${env:DB_PWD}
-        MasterUsername: ${env:DB_USER}
+        MasterUserPassword: ${env:NSG_DB_PASS}
+        MasterUsername: nsg
         Port: 5432
         DBSubnetGroupName: default-vpc-0538b50f1bd3cfd82
 
