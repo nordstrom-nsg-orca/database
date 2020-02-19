@@ -1,7 +1,7 @@
 
 INSERT INTO orca.user (username, password) VALUES (
   'admin',
-  crypt(:admin_password, gen_salt('bf'))
+  md5(:admin_password)
 );
 
 DO $$
