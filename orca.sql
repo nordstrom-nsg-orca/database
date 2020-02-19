@@ -1,5 +1,4 @@
 CREATE SCHEMA orca;
-
 CREATE ROLE readaccess;
 GRANT USAGE ON SCHEMA orca TO readaccess;
 GRANT SELECT ON ALL TABLES IN SCHEMA orca TO readaccess;
@@ -7,6 +6,13 @@ ALTER DEFAULT PRIVILEGES IN SCHEMA orca GRANT SELECT ON TABLES TO readaccess;
 
 CREATE USER nsgorca WITH PASSWORD #REDACTED;
 GRANT readaccess TO nsgorca;
+
+CREATE EXTENSION pgcrypto;
+CREATE TABLE orca.user(
+  id SERIAL PRIMARY KEY,
+  username TEXT NOT NULL UNIQUE,
+  password TEXT NOT NULL
+);
 
 CREATE TABLE orca.api_test(
   id SERIAL PRIMARY KEY,
@@ -44,7 +50,7 @@ SELECT json_build_object(
         WHERE columns.table_name = 'access_list' AND
             columns.column_name <> 'id'
     ),
-    'headers', ( 
+    'headers', (
         SELECT json_agg(t.*) AS json_agg
         FROM (
             SELECT columns.column_name, columns.data_type
@@ -63,9 +69,9 @@ SELECT json_build_object(
         ) t)
 ) AS results;
 
----- ---- ---- ---- ---- ---- ---- ---- 
+---- ---- ---- ---- ---- ---- ---- ----
 --- SERVER
----- ---- ---- ---- ---- ---- ---- ---- 
+---- ---- ---- ---- ---- ---- ---- ----
 CREATE TABLE orca.server_type(
     id SERIAL PRIMARY KEY,
     name VARCHAR NOT NULL
@@ -95,7 +101,7 @@ SELECT json_build_object(
         WHERE columns.table_name = 'server_type' AND
             columns.column_name <> 'id'
     ),
-    'headers', ( 
+    'headers', (
         SELECT json_agg(t.*) AS json_agg
         FROM (
             SELECT columns.column_name, columns.data_type
@@ -114,9 +120,9 @@ SELECT json_build_object(
         ) t)
 ) AS results;
 
----- ---- ---- ---- ---- ---- ---- ---- 
+---- ---- ---- ---- ---- ---- ---- ----
 --- ANSIBLE VIEW
----- ---- ---- ---- ---- ---- ---- ---- 
+---- ---- ---- ---- ---- ---- ---- ----
 
 CREATE OR REPLACE VIEW orca.module_view
 AS

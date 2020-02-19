@@ -1,8 +1,14 @@
+
+INSERT INTO orca.user (username, password) VALUES (
+  'admin',
+  crypt(:admin_password, gen_salt('bf'))
+);
+
 DO $$
-DECLARE ret_id INT; 
+DECLARE ret_id INT;
 BEGIN
 
----- ---- ---- ----- ---- ---- 
+---- ---- ---- ----- ---- ----
 -- ACLS
 ---- ---- ---- ----- ---- ----
 INSERT INTO orca.access_list (name) VALUES ('REMOTE-MANAGEMENT-STATIONS') RETURNING id INTO ret_id;
