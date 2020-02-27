@@ -18,6 +18,4 @@ var/
 
 # Serverless directories
 .serverless
-oldDB.pgpass
-newDB.pgpass
-mydb2dump.sql
+dbexport.psql

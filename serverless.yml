@@ -41,7 +41,9 @@ resources:
       Properties:
         AvailabilityZone: us-west-2a
         AllocatedStorage: "100"
-        DBInstanceClass: db.t2.micro
+        # DBInstanceClass: db.t2.micro ## old instance class
+        DBInstanceClass: db.t3.micro
+        EnablePerformanceInsights: true
         DBName: "nsgCloudDB"
         DBInstanceIdentifier: "nsgCloudDB"
         Engine: postgres
