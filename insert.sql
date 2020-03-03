@@ -1,4 +1,3 @@
-
 INSERT INTO orca.user (username, password) VALUES (
   'admin',
   md5(:admin_password)
@@ -13,7 +12,7 @@ BEGIN
 ---- ---- ---- ----- ---- ----
 INSERT INTO orca.access_list (name) VALUES ('REMOTE-MANAGEMENT-STATIONS') RETURNING id INTO ret_id;
 INSERT INTO orca.access_item (list_id, subnet, description) VALUES
-  (ret_id, '10.16.17.183/32', 'NSGTools PROD (a0319p11202'),
+  (ret_id, '10.21.66.86/32', 'NSGTools PROD (a0319p11202'),
   (ret_id, '10.16.23.48/32', 'Infoblox Discovery Appliance (ddidscv1.0319.datacenter.nordstrom.net)'),
   (ret_id, '10.16.23.76/32', 'Jump server (y0319p11015)'),
   (ret_id, '10.16.23.85/32', 'Jump server (y0319p11016'),
@@ -34,7 +33,9 @@ INSERT INTO orca.access_item (list_id, subnet, description) VALUES
   (ret_id, '10.228.33.224/32', 'CentOS Jump Server (y0990p10150)'),
   (ret_id, '10.228.33.251/32', 'CentOS Jump Server (y0990p10149)'),
   (ret_id, '172.23.40.0/22', 'NSG AWS VPC'),
-  (ret_id, '172.23.44.0/22', 'NSG AWS VPC');
+  (ret_id, '172.23.44.0/22', 'NSG AWS VPC'),
+  (ret_id, '10.21.70.0/24', '319 - v154_PROD_NSG_MGMT_10.21.70.0_24'),
+  (ret_id, '10.228.52.0/24', '990 - v522_PROD_NSG_MGMT_10.228.52.0_24');
 
 INSERT INTO orca.access_list (name) VALUES ('SNMP-ACCESS-ONLY') RETURNING id INTO ret_id;
 INSERT INTO orca.access_item (list_id, subnet, description) VALUES
