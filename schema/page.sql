@@ -1,5 +1,3 @@
-CREATE EXTENSION pgcrypto;
-
 CREATE TABLE orca.user(
   id SERIAL PRIMARY KEY,
   username TEXT NOT NULL UNIQUE,
