@@ -12,3 +12,18 @@ CREATE TABLE orca.schemaItem (
 	schemaId INTEGER REFERENCES orca.schema(id) NOT NULL,
 	data JSONB NOT NULL
 );
+
+CREATE OR REPLACE VIEW orca.table_columns
+AS
+ SELECT col.table_schema,
+    col.table_name,
+    col.column_name,
+    col.is_nullable,
+    col.data_type,
+    COALESCE(pk.constraint_name::character varying, ''::character varying) AS constraint_name
+   FROM information_schema.columns col
+     LEFT JOIN ( SELECT constraint_column_usage.table_name,
+            constraint_column_usage.column_name,
+            constraint_column_usage.constraint_name
+           FROM information_schema.constraint_column_usage
+          WHERE constraint_column_usage.constraint_name::text !~~ '%fkey'::text) pk ON pk.column_name::text = col.column_name::text AND pk.table_name::text = col.table_name::text;
