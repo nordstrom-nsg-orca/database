@@ -1,41 +1,14 @@
-
-
 service: postgressql
-
+​
 frameworkVersion: ">=1.57.0"
-
+​
 provider:
   name: aws
   stage: dev
   region: us-west-2
-
+​
 resources:
   Resources:
-    nsgCloudDBSubnets:
-      Type: AWS::RDS::DBSubnetGroup
-      Properties:
-        DBSubnetGroupName: test-subnet-group
-        DBSubnetGroupDescription: DMZ Subnets
-        SubnetIds:
-          - subnet-000ab08a6ba523839
-          - subnet-01e7a71a57518a8bc
-          - subnet-08b7d5fb815fda7ea
-    nsgCloudDBExternal:
-      Type: "AWS::RDS::DBInstance"
-      Properties:
-        AvailabilityZone: us-west-2a
-        AllocatedStorage: "100"
-        DBInstanceClass: db.t2.micro
-        DBName: "nsgExternalDB"
-        DBInstanceIdentifier: "nsgExternalDB"
-        Engine: postgres
-        Iops: "1000"
-        MasterUserPassword: ${env:NSG_DB_PASS}
-        MasterUsername: nsg
-        Port: 5432
-        DBSubnetGroupName: test-subnet-group
-        PubliclyAccessible: true
-      DependsOn: nsgCloudDBSubnets
     nsgCloudDB:
       Type: "AWS::RDS::DBInstance"
       Properties:
@@ -52,8 +25,26 @@ resources:
         MasterUsername: nsg
         Port: 5432
         DBSubnetGroupName: default-vpc-0538b50f1bd3cfd82
-
-
+    orcaDB:
+      Type: "AWS::RDS::DBInstance"
+      Properties:
+        AvailabilityZone: us-west-2a
+        AllocatedStorage: "100"
+        DBInstanceClass: db.t2.small
+        EnablePerformanceInsights: true
+        DBName: "orcaDB"
+        DBInstanceIdentifier: "orcaDB"
+        Engine: postgres
+        Iops: "1000"
+        MasterUserPassword: ${env:ORCA_DB_PASS}
+        MasterUsername: orca
+        Port: 5432
+        DBSubnetGroupName: default-vpc-0538b50f1bd3cfd82
+        Tags:
+        -
+          Key: scheduler-rds-startstop
+          Value: opt-out
+​
   Outputs:
     nsgCloudDBUrl:
       Value: !Join
@@ -63,3 +54,11 @@ resources:
          - !GetAtt nsgCloudDB.Endpoint.Port
       Export:
         Name: nsgCloudDBUrl
+    orcaDBUrl:
+      Value: !Join
+       - ':'
+       - - "https://"
+         - !GetAtt orcaDB.Endpoint.Address
+         - !GetAtt orcaDB.Endpoint.Port
+      Export:
+        Name: orcaDBUrl
