@@ -1,6 +1,3 @@
-
-
-
 INSERT INTO orca.schema (name, schema) VALUES
 ('acl', '{"type":"object","properties":{"name":{"type":"string"},"ips":{"type":"array","items":{"properties":{"ip":{"type":"string"},"description":{"type":"string"},"delete":{"type":"boolean"}},"type":"object","required":["ip"]}}},"$schema":"test","$id":"test","title":"test"}');
 
